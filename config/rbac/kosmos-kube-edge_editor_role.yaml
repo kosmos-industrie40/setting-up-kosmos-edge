@@ -1,0 +1,24 @@
+# permissions for end users to edit kosmos-kube-edges.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kosmos-kube-edge-editor-role
+rules:
+- apiGroups:
+  - crd.gitlab.inovex.de
+  resources:
+  - kosmos-kube-edges
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - crd.gitlab.inovex.de
+  resources:
+  - kosmos-kube-edges/status
+  verbs:
+  - get

@@ -1,0 +1,16 @@
+domain: gitlab.inovex.de
+layout:
+- go.kubebuilder.io/v3
+projectName: kosmos-kube-edge
+repo: gitlab.inovex.de/proj-kosmos
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: gitlab.inovex.de
+  group: crd
+  kind: KosmosKubeEdge
+  path: gitlab.inovex.de/proj-kosmos/api/v1
+  version: v1
+version: "3"
