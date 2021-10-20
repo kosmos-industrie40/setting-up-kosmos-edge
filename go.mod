@@ -1,4 +1,4 @@
-module gitlab.inovex.de/proj-kosmos
+module gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge
 
 go 1.16
 

@@ -61,8 +61,8 @@ type ML_TriggerPipelines struct {
 type PipelinePipelines struct {
 	Container     ContainerDefinitions `json:"container"`
 	PersistOutput bool                 `json:"persistOutput"`
-	From          ModelDefinitions     `json:"from"` //anyOf Model oder
-	To            ModelDefinitions     `json:"to"`   //null gelöst?
+	From          *ModelDefinitions    `json:"from"`
+	To            *ModelDefinitions    `json:"to"`
 }
 
 type PipelinesDefinitions struct {
