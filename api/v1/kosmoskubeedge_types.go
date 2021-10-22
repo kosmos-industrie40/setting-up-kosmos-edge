@@ -55,7 +55,8 @@ type ML_TriggerPipelines struct {
 	//+kubebuilder:validation:Enum:[time,event]
 	Type string `json:"type"`
 
-	Definition interface{} `json:"definition,omitempty"`
+	// TODO: update!!!!!
+	Definition string `json:"definition,omitempty"`
 }
 
 type PipelinePipelines struct {
@@ -69,19 +70,6 @@ type PipelinesDefinitions struct {
 	ML_Trigger ML_TriggerPipelines `json:"mltrigger"`
 	Pipeline   []PipelinePipelines `json:"pipeline"`
 	Sensors    []string            `json:"sensors"`
-}
-
-type DefinitionsSpec struct {
-	Container ContainerDefinitions `json:"container"`
-
-	//+kubebuilder:validation:Format:date-time
-	Time string `json:"time"`
-
-	//+kubebuilder:validation:Format:duration
-	Duration string `json:"duration"`
-
-	Model     ModelDefinitions       `json:"model"`
-	Pipelines []PipelinesDefinitions `json:"pipelines"`
 }
 
 type ValidContract struct {
@@ -139,7 +127,7 @@ type ConnectionSystems struct {
 	//+kubebuilder:validation:Format:duration
 	Interval string `json:"interval"`
 
-	Container ContainerDefinitions `json:"container`
+	Container ContainerDefinitions `json:"container"`
 }
 
 type SystemsAnalysis struct {
@@ -163,11 +151,11 @@ type BlockchainConnectionBody struct {
 	//+kubebuilder:validation:Format:url
 	Uri string `json:"uri"`
 
-	//+kubebuilder:validation:MinProperties:=2
-	//+kubebuilder:validation:MaxProperties:=2
+	//+kubebuilder:validation:MinItems:=2
+	//+kubebuilder:validation:MaxItems:=2
 	ContainerList []ContainerDefinitions `json:"containerList"`
 
-	//+kubebuilder:validation:MinProperties:=0
+	//+kubebuilder:validation:MinItems:=0
 	Sensors []SensorsBlockchainConnectionBody `json:"sensors"`
 }
 
@@ -221,20 +209,14 @@ type SignatureProperties struct {
 	Signature string        `json:"signature"`
 }
 
-type PropertiesSpec struct {
-	Body BodyProperties `json:"body"`
-
-	//+kubebuilder:validation:Optional
-	Signature SignatureProperties `json:"signature,omitempty"`
-}
-
 // KosmosKubeEdgeSpec defines the desired state of KosmosKubeEdge
 type KosmosKubeEdgeSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Body BodyProperties `json:"body"`
 
-	Definitions []DefinitionsSpec `json:"definitions"`
-	Properties  []PropertiesSpec  `json:"properties"`
+	//+kubebuilder:validation:Optional
+	Signature SignatureProperties `json:"signature,omitempty"`
 }
 
 // KosmosKubeEdgeStatus defines the observed state of KosmosKubeEdge

@@ -36,69 +36,18 @@ spec:
           spec:
             description: KosmosKubeEdgeSpec defines the desired state of KosmosKubeEdge
             properties:
-              definitions:
-                items:
-                  properties:
-                    container:
-                      properties:
-                        arguments:
-                          items:
-                            type: string
-                          type: array
-                        environment:
-                          items:
-                            type: string
-                          type: array
-                        ports:
-                          items:
-                            properties:
-                              dst:
-                                type: integer
-                              label:
-                                items:
-                                  type: string
-                                type: array
-                              src:
-                                type: integer
-                            required:
-                            - src
-                            type: object
-                          type: array
-                        tag:
-                          type: string
-                        url:
-                          type: string
-                      required:
-                      - arguments
-                      - environment
-                      - tag
-                      - url
-                      type: object
-                    duration:
-                      type: string
-                    model:
-                      properties:
-                        tag:
-                          type: string
-                        url:
-                          type: string
-                      required:
-                      - tag
-                      - url
-                      type: object
-                    pipelines:
-                      items:
-                        properties:
-                          mltrigger:
-                            properties:
-                              definition: {}
-                              type:
-                                type: string
-                            required:
-                            - type
-                            type: object
-                          pipeline:
-                            items:
+              body:
+                description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
+                  Important: Run "make" to regenerate code after modifying this file'
+                properties:
+                  analysis:
+                    properties:
+                      enable:
+                        type: boolean
+                      systems:
+                        items:
+                          properties:
+                            connection:
                               properties:
                                 container:
                                   properties:
@@ -135,445 +84,383 @@ spec:
                                   - tag
                                   - url
                                   type: object
-                                from:
-                                  properties:
-                                    tag:
-                                      type: string
-                                    url:
-                                      type: string
-                                  required:
-                                  - tag
-                                  - url
-                                  type: object
-                                persistOutput:
-                                  type: boolean
-                                to:
-                                  properties:
-                                    tag:
-                                      type: string
-                                    url:
-                                      type: string
-                                  required:
-                                  - tag
-                                  - url
-                                  type: object
+                                interval:
+                                  type: string
+                                url:
+                                  type: string
+                                user-mgmt:
+                                  type: string
                               required:
                               - container
-                              - from
-                              - persistOutput
-                              - to
+                              - interval
+                              - url
+                              - user-mgmt
                               type: object
+                            enable:
+                              type: boolean
+                            pipelines:
+                              properties:
+                                mltrigger:
+                                  properties:
+                                    definition:
+                                      description: 'TODO: update!!!!!'
+                                      type: string
+                                    type:
+                                      type: string
+                                  required:
+                                  - type
+                                  type: object
+                                pipeline:
+                                  items:
+                                    properties:
+                                      container:
+                                        properties:
+                                          arguments:
+                                            items:
+                                              type: string
+                                            type: array
+                                          environment:
+                                            items:
+                                              type: string
+                                            type: array
+                                          ports:
+                                            items:
+                                              properties:
+                                                dst:
+                                                  type: integer
+                                                label:
+                                                  items:
+                                                    type: string
+                                                  type: array
+                                                src:
+                                                  type: integer
+                                              required:
+                                              - src
+                                              type: object
+                                            type: array
+                                          tag:
+                                            type: string
+                                          url:
+                                            type: string
+                                        required:
+                                        - arguments
+                                        - environment
+                                        - tag
+                                        - url
+                                        type: object
+                                      from:
+                                        properties:
+                                          tag:
+                                            type: string
+                                          url:
+                                            type: string
+                                        required:
+                                        - tag
+                                        - url
+                                        type: object
+                                      persistOutput:
+                                        type: boolean
+                                      to:
+                                        properties:
+                                          tag:
+                                            type: string
+                                          url:
+                                            type: string
+                                        required:
+                                        - tag
+                                        - url
+                                        type: object
+                                    required:
+                                    - container
+                                    - from
+                                    - persistOutput
+                                    - to
+                                    type: object
+                                  type: array
+                                sensors:
+                                  items:
+                                    type: string
+                                  type: array
+                              required:
+                              - mltrigger
+                              - pipeline
+                              - sensors
+                              type: object
+                            system:
+                              type: string
+                          required:
+                          - enable
+                          - pipelines
+                          - system
+                          type: object
+                        type: array
+                    required:
+                    - enable
+                    - systems
+                    type: object
+                  blockchainConnection:
+                    properties:
+                      containerList:
+                        items:
+                          properties:
+                            arguments:
+                              items:
+                                type: string
+                              type: array
+                            environment:
+                              items:
+                                type: string
+                              type: array
+                            ports:
+                              items:
+                                properties:
+                                  dst:
+                                    type: integer
+                                  label:
+                                    items:
+                                      type: string
+                                    type: array
+                                  src:
+                                    type: integer
+                                required:
+                                - src
+                                type: object
+                              type: array
+                            tag:
+                              type: string
+                            url:
+                              type: string
+                          required:
+                          - arguments
+                          - environment
+                          - tag
+                          - url
+                          type: object
+                        maxItems: 2
+                        minItems: 2
+                        type: array
+                      sensors:
+                        items:
+                          type: object
+                        minItems: 0
+                        type: array
+                      uri:
+                        type: string
+                    required:
+                    - containerList
+                    - sensors
+                    - uri
+                    type: object
+                  checkSignature:
+                    type: boolean
+                  contract:
+                    properties:
+                      creationTime:
+                        type: string
+                      id:
+                        type: string
+                      parentContract:
+                        type: string
+                      partners:
+                        items:
+                          type: string
+                        type: array
+                      permissions:
+                        properties:
+                          readPermission:
+                            items:
+                              type: string
                             type: array
-                          sensors:
+                          writePermission:
                             items:
                               type: string
                             type: array
                         required:
-                        - mltrigger
-                        - pipeline
-                        - sensors
+                        - readPermission
+                        - writePermission
                         type: object
-                      type: array
-                    time:
+                      valid:
+                        properties:
+                          end:
+                            type: string
+                          start:
+                            type: string
+                        required:
+                        - end
+                        - start
+                        type: object
+                      version:
+                        type: string
+                    required:
+                    - creationTime
+                    - id
+                    - partners
+                    - permissions
+                    - valid
+                    - version
+                    type: object
+                  kosmosLocalSystems:
+                    items:
                       type: string
-                  required:
-                  - container
-                  - duration
-                  - model
-                  - pipelines
-                  - time
-                  type: object
-                type: array
-              properties:
-                items:
-                  properties:
-                    body:
+                    type: array
+                  machine:
+                    type: string
+                  machineConnection:
+                    items:
                       properties:
-                        analysis:
+                        connectionData:
                           properties:
-                            enable:
-                              type: boolean
-                            systems:
-                              items:
-                                properties:
-                                  connection:
-                                    properties:
-                                      interval:
-                                        type: string
-                                      url:
-                                        type: string
-                                      user-mgmt:
-                                        type: string
-                                    required:
-                                    - interval
-                                    - url
-                                    - user-mgmt
-                                    type: object
-                                  enable:
-                                    type: boolean
-                                  pipelines:
-                                    properties:
-                                      mltrigger:
-                                        properties:
-                                          definition: {}
-                                          type:
-                                            type: string
-                                        required:
-                                        - type
-                                        type: object
-                                      pipeline:
-                                        items:
-                                          properties:
-                                            container:
-                                              properties:
-                                                arguments:
-                                                  items:
-                                                    type: string
-                                                  type: array
-                                                environment:
-                                                  items:
-                                                    type: string
-                                                  type: array
-                                                ports:
-                                                  items:
-                                                    properties:
-                                                      dst:
-                                                        type: integer
-                                                      label:
-                                                        items:
-                                                          type: string
-                                                        type: array
-                                                      src:
-                                                        type: integer
-                                                    required:
-                                                    - src
-                                                    type: object
-                                                  type: array
-                                                tag:
-                                                  type: string
-                                                url:
-                                                  type: string
-                                              required:
-                                              - arguments
-                                              - environment
-                                              - tag
-                                              - url
-                                              type: object
-                                            from:
-                                              properties:
-                                                tag:
-                                                  type: string
-                                                url:
-                                                  type: string
-                                              required:
-                                              - tag
-                                              - url
-                                              type: object
-                                            persistOutput:
-                                              type: boolean
-                                            to:
-                                              properties:
-                                                tag:
-                                                  type: string
-                                                url:
-                                                  type: string
-                                              required:
-                                              - tag
-                                              - url
-                                              type: object
-                                          required:
-                                          - container
-                                          - from
-                                          - persistOutput
-                                          - to
-                                          type: object
-                                        type: array
-                                      sensors:
-                                        items:
-                                          type: string
-                                        type: array
-                                    required:
-                                    - mltrigger
-                                    - pipeline
-                                    - sensors
-                                    type: object
-                                  system:
-                                    type: string
-                                required:
-                                - enable
-                                - pipelines
-                                - system
-                                type: object
-                              type: array
-                          required:
-                          - enable
-                          - systems
-                          type: object
-                        blockchainConnection:
-                          properties:
-                            containerList:
-                              items:
-                                properties:
-                                  arguments:
-                                    items:
-                                      type: string
-                                    type: array
-                                  environment:
-                                    items:
-                                      type: string
-                                    type: array
-                                  ports:
-                                    items:
-                                      properties:
-                                        dst:
-                                          type: integer
-                                        label:
-                                          items:
-                                            type: string
-                                          type: array
-                                        src:
-                                          type: integer
-                                      required:
-                                      - src
-                                      type: object
-                                    type: array
-                                  tag:
-                                    type: string
-                                  url:
-                                    type: string
-                                required:
-                                - arguments
-                                - environment
-                                - tag
-                                - url
-                                type: object
-                              type: array
-                            sensors:
-                              items:
-                                type: object
-                              type: array
+                            credentials:
+                              type: object
+                            machineID:
+                              type: string
                             uri:
                               type: string
                           required:
-                          - containerList
-                          - sensors
+                          - credentials
+                          - machineID
                           - uri
                           type: object
-                        checkSignature:
-                          type: boolean
-                        contract:
+                        connector:
                           properties:
-                            creationTime:
-                              type: string
-                            id:
-                              type: string
-                            parentContract:
-                              type: string
-                            partners:
+                            arguments:
                               items:
                                 type: string
                               type: array
-                            permissions:
-                              properties:
-                                readPermission:
-                                  items:
-                                    type: string
-                                  type: array
-                                writePermission:
-                                  items:
-                                    type: string
-                                  type: array
-                              required:
-                              - readPermission
-                              - writePermission
-                              type: object
-                            valid:
-                              properties:
-                                end:
-                                  type: string
-                                start:
-                                  type: string
-                              required:
-                              - end
-                              - start
-                              type: object
-                            version:
+                            environment:
+                              items:
+                                type: string
+                              type: array
+                            ports:
+                              items:
+                                properties:
+                                  dst:
+                                    type: integer
+                                  label:
+                                    items:
+                                      type: string
+                                    type: array
+                                  src:
+                                    type: integer
+                                required:
+                                - src
+                                type: object
+                              type: array
+                            tag:
+                              type: string
+                            url:
                               type: string
                           required:
-                          - creationTime
-                          - id
-                          - partners
-                          - permissions
-                          - valid
-                          - version
+                          - arguments
+                          - environment
+                          - tag
+                          - url
                           type: object
-                        kosmosLocalSystems:
-                          items:
-                            type: string
-                          type: array
-                        machine:
-                          type: string
-                        machineConnection:
-                          items:
-                            properties:
-                              connectionData:
-                                properties:
-                                  credentials:
-                                    type: object
-                                  machineID:
-                                    type: string
-                                  uri:
-                                    type: string
-                                required:
-                                - credentials
-                                - machineID
-                                - uri
-                                type: object
-                              connector:
-                                properties:
-                                  arguments:
-                                    items:
-                                      type: string
-                                    type: array
-                                  environment:
-                                    items:
-                                      type: string
-                                    type: array
-                                  ports:
-                                    items:
-                                      properties:
-                                        dst:
-                                          type: integer
-                                        label:
-                                          items:
-                                            type: string
-                                          type: array
-                                        src:
-                                          type: integer
-                                      required:
-                                      - src
-                                      type: object
-                                    type: array
-                                  tag:
-                                    type: string
-                                  url:
-                                    type: string
-                                required:
-                                - arguments
-                                - environment
-                                - tag
-                                - url
-                                type: object
-                              subscribeData:
-                                type: object
-                            required:
-                            - connectionData
-                            - connector
-                            - subscribeData
-                            type: object
-                          type: array
-                        metadata:
+                        subscribeData:
                           type: object
-                        requiredTechnicalContainers:
-                          items:
-                            properties:
-                              containers:
-                                items:
-                                  properties:
-                                    arguments:
-                                      items:
-                                        type: string
-                                      type: array
-                                    environment:
-                                      items:
-                                        type: string
-                                      type: array
-                                    ports:
-                                      items:
-                                        properties:
-                                          dst:
-                                            type: integer
-                                          label:
-                                            items:
-                                              type: string
-                                            type: array
-                                          src:
-                                            type: integer
-                                        required:
-                                        - src
-                                        type: object
-                                      type: array
-                                    tag:
-                                      type: string
-                                    url:
-                                      type: string
-                                  required:
-                                  - arguments
-                                  - environment
-                                  - tag
-                                  - url
-                                  type: object
-                                type: array
-                              system:
-                                type: string
-                            required:
-                            - containers
-                            - system
-                            type: object
-                          type: array
-                        sensors:
-                          items:
-                            properties:
-                              meta:
-                                type: object
-                              name:
-                                type: string
-                              storageDuration:
-                                items:
-                                  properties:
-                                    duration:
-                                      type: string
-                                    systemName:
-                                      type: string
-                                  required:
-                                  - duration
-                                  - systemName
-                                  type: object
-                                type: array
-                            required:
-                            - name
-                            - storageDuration
-                            type: object
-                          type: array
                       required:
-                      - machine
-                      - sensors
+                      - connectionData
+                      - connector
+                      - subscribeData
                       type: object
-                    signature:
+                    type: array
+                  metadata:
+                    type: object
+                  requiredTechnicalContainers:
+                    items:
+                      properties:
+                        containers:
+                          items:
+                            properties:
+                              arguments:
+                                items:
+                                  type: string
+                                type: array
+                              environment:
+                                items:
+                                  type: string
+                                type: array
+                              ports:
+                                items:
+                                  properties:
+                                    dst:
+                                      type: integer
+                                    label:
+                                      items:
+                                        type: string
+                                      type: array
+                                    src:
+                                      type: integer
+                                  required:
+                                  - src
+                                  type: object
+                                type: array
+                              tag:
+                                type: string
+                              url:
+                                type: string
+                            required:
+                            - arguments
+                            - environment
+                            - tag
+                            - url
+                            type: object
+                          type: array
+                        system:
+                          type: string
+                      required:
+                      - containers
+                      - system
+                      type: object
+                    type: array
+                  sensors:
+                    items:
                       properties:
                         meta:
-                          properties:
-                            algorithm:
-                              type: string
-                            date:
-                              type: string
-                          required:
-                          - algorithm
-                          - date
                           type: object
-                        signature:
+                        name:
                           type: string
+                        storageDuration:
+                          items:
+                            properties:
+                              duration:
+                                type: string
+                              systemName:
+                                type: string
+                            required:
+                            - duration
+                            - systemName
+                            type: object
+                          type: array
                       required:
-                      - meta
-                      - signature
+                      - name
+                      - storageDuration
                       type: object
-                  required:
-                  - body
-                  type: object
-                type: array
+                    type: array
+                required:
+                - machine
+                - sensors
+                type: object
+              signature:
+                properties:
+                  meta:
+                    properties:
+                      algorithm:
+                        type: string
+                      date:
+                        type: string
+                    required:
+                    - algorithm
+                    - date
+                    type: object
+                  signature:
+                    type: string
+                required:
+                - meta
+                - signature
+                type: object
             required:
-            - definitions
-            - properties
+            - body
             type: object
           status:
             description: KosmosKubeEdgeStatus defines the observed state of KosmosKubeEdge
