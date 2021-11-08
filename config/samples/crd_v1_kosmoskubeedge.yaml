@@ -2,6 +2,5 @@ apiVersion: crd.gitlab.inovex.de/v1
 kind: KosmosKubeEdge
 metadata:
   name: kosmoskubeedge-sample
-spec:
-  # Add fields here
-  foo: bar
+  labels:
+    irgendwas: irgendwas

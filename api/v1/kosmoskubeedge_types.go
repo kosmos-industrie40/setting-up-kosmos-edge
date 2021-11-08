@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 //specifies that all fields in this package are required by default
-//if fields are not requiered, they need to be specified as optional
-//+kubebuilder:validation:Required
+//if fields are not requiered, they need to be specified as Optional
+//+kubebuilder:validation:Optional
 package v1
 
 import (
@@ -186,7 +186,7 @@ type BodyProperties struct {
 	Machine string        `json:"machine"`
 	Sensors []SensorsBody `json:"sensors"`
 
-	//+kubebuilder:validation:Optional
+	//	//+kubebuilder:validation:Optional
 	Contract                    ContractBody                      `json:"contract,omitempty"`
 	RequiredTechnicalContainers []RequiredTechnicalContainersBody `json:"requiredTechnicalContainers,omitempty"`
 	KosmosLocalSystems          []string                          `json:"kosmosLocalSystems,omitempty"`
@@ -219,11 +219,8 @@ type KosmosKubeEdgeSpec struct {
 	Signature SignatureProperties `json:"signature,omitempty"`
 }
 
-// KosmosKubeEdgeStatus defines the observed state of KosmosKubeEdge
 type KosmosKubeEdgeStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
-
+	CreatedDeployments int `json:"createdDeployments"`
 }
 
 //+kubebuilder:object:root=true

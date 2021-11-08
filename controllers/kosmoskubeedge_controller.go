@@ -23,6 +23,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/utils/pointer"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -74,26 +75,35 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	//schreibt infos in edge
 	r.Get(ctx, req.NamespacedName, edge)
 
-	//log-Eintrag
-	log.Info("found a signature", "signature", edge.Spec.Signature.Signature)
+	// edge.Status.LastReconciliationTime = v1.Now()
+	// r.Status().Update(ctx, edge)
+	// log.Info("updated lastReconciliationTime", "lastReconciliationTime", edge.Status.LastReconciliationTime)
 
-	for i, definition := range edge.Spec.Body.RequiredTechnicalContainers {
+	// for i, definition := range edge.Spec.Body.RequiredTechnicalContainers {
+	// 	deployment := &appsv1.Deployment{
+	// 		ObjectMeta: metav1.ObjectMeta{
+	// 			Name:      fmt.Sprintf("%s-%d", edge.Name, i),
+	// 			Namespace: edge.Namespace,
+	// 		},
+	// 	}
+	for i := 1; i < 4; i++ {
 		deployment := &appsv1.Deployment{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      fmt.Sprintf("%s-%d", edge.Name, i),
 				Namespace: edge.Namespace,
-			},
-		}
-
+			}}
 		res, err := ctrl.CreateOrUpdate(ctx, r.Client, deployment, func() error {
 			deployment.Spec = appsv1.DeploymentSpec{
 				Replicas: pointer.Int32Ptr(3),
+				Selector: *metav1.LabelSelector.MatchExpressions{
+					Key: edge.Labels,
+				},
 				Template: v1.PodTemplateSpec{
 					Spec: v1.PodSpec{
 						Containers: []v1.Container{
 							{
-								Name:  fmt.Sprintf("requiredTechnicalContainer-%i", i+1),
-								Image: fmt.Sprintf("requiredTechnicalContainer-image-%i", i),
+								Name:  fmt.Sprintf("requiredtechnicaltontainer-%d", i+1),
+								Image: fmt.Sprintf("requiredtechnicaltontainer-image-%d", i+1),
 							},
 						},
 					},
