@@ -1,6 +1,32 @@
 apiVersion: crd.gitlab.inovex.de/v1
 kind: KosmosKubeEdge
 metadata:
-  name: kosmoskubeedge-sample
+  name: kosmoskubeedge-bsp12
   labels:
     irgendwas: irgendwas
+spec:
+  body:
+    machine: "84bab968-e6b7-11ea-b10c-54e1ad207114"
+    sensors:
+      - name: "temperature"
+      - storageDuration:
+        - systemName: "edge"
+        - duration: "5h"
+      - meta:
+    requiredTechnicalContainers:
+      - system: "edge"
+        containers:
+        - url: "test-url" #"harbor.kosmos.idcp.inovex.io/abc/grafana"
+          tag: "7.1.5"
+          ports:
+            - label: 
+              - "grafana"
+            - src: 8008
+        # - url: "test-url2" "harbor.kosmos.idcp.inovex.io/abc/vault"
+        #   tag: "23refds"
+        #   environment:
+        #     - "--version"
+        #     - "--connect"
+        #     - "abc"
+        #   arguments:
+        #     - ""

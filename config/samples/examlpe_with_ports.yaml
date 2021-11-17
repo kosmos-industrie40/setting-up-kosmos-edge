@@ -23,32 +23,42 @@
 					"test"
 				]
 			},
-			"id": "53asdkl;fjasl;kfj",
+			"id": "53",
 			"version": "v2"
 		},
 		"requiredTechnicalContainers": [
-            {
-                "system": "edge",
-                "containers": [
-                    {
-                        "url": "harbor.kosmos.idcp.inovex.io/abc/grafana",
-                        "tag": "7.1.5",
-                        "arguments": [],
-                        "environment": []
-                    },
-                    {
-                        "url": "harbor.kosmos.idcp.inovex.io/abc/vault",
-                        "tag": "23refds",
-                        "arguments": [
-                            "--version",
-                            "--conenct",
-                            "abc"
-                        ],
-                        "environment": []
-                    }
-                ]
-            }
-        ],
+			{
+				"system": "edge",
+				"containers": [
+					{
+						"url": "harbor.kosmos.idcp.inovex.io/abc/grafana",
+						"tag": "7.1.5",
+						"arguments": [],
+						"environment": [],
+						"ports": [
+							{
+								"label": [
+									"grafana"
+								],
+								"src": 8008
+							}
+						]
+					},
+					{
+						"url": "harbor.kosmos.idcp.inovex.io/abc/vault",
+						"tag": "23refds",
+						"arguments": [
+						],
+						"environment": [
+							"--version",
+							"--conenct",
+							"abc"
+						],
+						"ports": []
+					}
+				]
+			}
+		],
 		"machine": "84bab968-e6b7-11ea-b10c-54e1ad207114",
 		"kosmosLocalSystems": [
 			"machineGateway",
@@ -139,7 +149,7 @@
 					"connection": {
 						"url": "https://connector.kosmos.idcp.inovex.io",
 						"user-mgmt": "https://user.kosmos.idcp.inovex.io",
-						"interval": "5m",
+						"interval": "5M",
 						"container": {
 							"url": "analyse-connector",
 							"tag": "0.0.10",
@@ -267,7 +277,7 @@
 					"arguments": []
 				}
 			],
-			"sensors": ["crash", "runtime"]
+			"sensors": ["alarms"]
 		}
 	},
 	"signature": {
@@ -278,3 +288,4 @@
 		}
 	}
 }
+

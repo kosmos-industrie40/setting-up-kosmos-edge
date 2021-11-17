@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -61,9 +62,6 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	//
 	log := log.FromContext(ctx)
 
-	//log-Eintrag
-	log.Info("I watched a kosmos kube edge")
-
 	//packe type KosmosKubeEdge, gefunden in Go-Controller-Runtime in eine variabel,
 	//sodass ich Zugriff auf alle types in der Struktur habe
 	//obj
@@ -75,49 +73,100 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	//schreibt infos in edge
 	r.Get(ctx, req.NamespacedName, edge)
 
-	// edge.Status.LastReconciliationTime = v1.Now()
-	// r.Status().Update(ctx, edge)
 	// log.Info("updated lastReconciliationTime", "lastReconciliationTime", edge.Status.LastReconciliationTime)
 
-	// for i, definition := range edge.Spec.Body.RequiredTechnicalContainers {
-	// 	deployment := &appsv1.Deployment{
-	// 		ObjectMeta: metav1.ObjectMeta{
-	// 			Name:      fmt.Sprintf("%s-%d", edge.Name, i),
-	// 			Namespace: edge.Namespace,
-	// 		},
-	// 	}
-	for i := 1; i < 4; i++ {
-		deployment := &appsv1.Deployment{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      fmt.Sprintf("%s-%d", edge.Name, i),
-				Namespace: edge.Namespace,
-			}}
-		res, err := ctrl.CreateOrUpdate(ctx, r.Client, deployment, func() error {
-			deployment.Spec = appsv1.DeploymentSpec{
-				Replicas: pointer.Int32Ptr(3),
-				Selector: *metav1.LabelSelector.MatchExpressions{
-					Key: edge.Labels,
+	for i, requTechCont := range edge.Spec.Body.RequiredTechnicalContainers {
+		for j, containers := range requTechCont.Containers {
+			deployment := &appsv1.Deployment{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      fmt.Sprintf("%s-%d-%d", edge.Name, i+1, j+1),
+					Namespace: edge.Namespace,
 				},
-				Template: v1.PodTemplateSpec{
-					Spec: v1.PodSpec{
-						Containers: []v1.Container{
-							{
-								Name:  fmt.Sprintf("requiredtechnicaltontainer-%d", i+1),
-								Image: fmt.Sprintf("requiredtechnicaltontainer-image-%d", i+1),
+			}
+			res, err := ctrl.CreateOrUpdate(ctx, r.Client, deployment, func() error {
+				deployment.Spec = appsv1.DeploymentSpec{
+					Replicas: pointer.Int32Ptr(3),
+					Selector: &metav1.LabelSelector{
+						MatchLabels: edge.Labels,
+					},
+					Template: v1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: edge.Labels,
+						},
+						Spec: v1.PodSpec{
+							//  System: requTechCont.System,
+							Containers: []v1.Container{
+								{
+									Name:  containers.Url,
+									Image: containers.Tag,
+									Args:  containers.Arguments,
+									Env:   getEnvVarValues(containers.Environment),
+									Ports: getListOfPorts(containers.Ports),
+								},
 							},
 						},
 					},
-				},
+				}
+				return nil
+			})
+
+			if err != nil {
+				return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
 			}
-			return nil
-		})
-		if err != nil {
-			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
+			log.Info("result from create or update", "res", res)
 		}
-		log.Info("result from create or update", "res", res)
 	}
 
 	return ctrl.Result{}, nil
+}
+
+func getEnvVarValues(contractEnvironment []string) []v1.EnvVar {
+	res := []v1.EnvVar{}
+	for i, envValue := range contractEnvironment {
+		res = append(res, v1.EnvVar{
+			Name:  "EnvVarValue-Name" + "-" + strconv.Itoa(i+1), //// Name noch mit Jan klären
+			Value: envValue,
+		})
+	}
+	return res
+}
+
+func getListOfPorts(contractPorts []crdv1.PortsContainer) []v1.ContainerPort {
+	res := []v1.ContainerPort{}
+	for i, port := range contractPorts {
+		res = append(res, v1.ContainerPort{
+			Name:          alignLabelsToString(port.Label, i+1),
+			ContainerPort: int32(getValidContainerPort(port.Src)),
+			//ContainerPort: int32(port.Src),
+		})
+	}
+	return res
+}
+
+func getValidContainerPort(portSource int) int {
+	if 0 < portSource && portSource < 65536 {
+		return portSource
+	} else {
+		return 1
+	}
+}
+
+func alignLabelsToString(portLabels []string, portNum int) string {
+	res := ""
+	for _, label := range portLabels {
+		if res != "" {
+			res = res + "-" + label
+			continue
+		} else {
+			res = res + label
+		}
+	}
+
+	if res == "" {
+		return res
+	} else {
+		return res + "-" + strconv.Itoa(portNum)
+	}
 }
 
 // SetupWithManager sets up the controller with the Manager.

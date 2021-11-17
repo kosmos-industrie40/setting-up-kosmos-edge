@@ -1,7 +1,0 @@
-apiVersion: crd.gitlab.inovex.de/v1
-kind: Kosmos-Kube-Edge
-metadata:
-  name: kosmos-kube-edge-sample
-spec:
-  # Add fields here
-  foo: bar
