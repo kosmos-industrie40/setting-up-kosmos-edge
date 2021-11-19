@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -29,6 +30,7 @@ import (
 	"k8s.io/utils/pointer"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge/api/v1"
@@ -61,55 +63,45 @@ type KosmosKubeEdgeReconciler struct {
 func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	//
 	log := log.FromContext(ctx)
-
-	//packe type KosmosKubeEdge, gefunden in Go-Controller-Runtime in eine variabel,
-	//sodass ich Zugriff auf alle types in der Struktur habe
-	//obj
-	//edge = struct pointer
 	edge := &crdv1.KosmosKubeEdge{}
 
-	// for reconcile interface, retrieves an obj + infos from cluster
-	//(request-scoped values, uniquely identifies obj, aus dem struct der crd)
-	//schreibt infos in edge
-	r.Get(ctx, req.NamespacedName, edge)
+	// retrieves an obj + infos from cluster
+	err := r.Get(ctx, req.NamespacedName, edge)
+	if err != nil {
+		return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
+	}
 
-	// log.Info("updated lastReconciliationTime", "lastReconciliationTime", edge.Status.LastReconciliationTime)
+	//build deployments for neccessary containers
+	for i, machineConnection := range edge.Spec.Body.MachineConnection {
+		var j int
+		res, err := r.deployContainers(ctx, edge, machineConnection.Connector, i, j, "machineconnection")
+		if err != nil {
+			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
+		}
+		log.Info("result from create or update", "res", res)
+	}
+
+	for i, analysisSystems := range edge.Spec.Body.Analysis.Systems {
+		var j int
+		res, err := r.deployContainers(ctx, edge, analysisSystems.Connection.Container, i, j, "analysissystemconnection")
+		if err != nil {
+			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
+		}
+		log.Info("result from create or update", "res", res)
+	}
+
+	for i, blockchainConnection := range edge.Spec.Body.BlockchainConnection.ContainerList {
+		var j int
+		res, err := r.deployContainers(ctx, edge, blockchainConnection, j, i, "blockchainconnection")
+		if err != nil {
+			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
+		}
+		log.Info("result from create or update", "res", res)
+	}
 
 	for i, requTechCont := range edge.Spec.Body.RequiredTechnicalContainers {
 		for j, containers := range requTechCont.Containers {
-			deployment := &appsv1.Deployment{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      fmt.Sprintf("%s-%d-%d", edge.Name, i+1, j+1),
-					Namespace: edge.Namespace,
-				},
-			}
-			res, err := ctrl.CreateOrUpdate(ctx, r.Client, deployment, func() error {
-				deployment.Spec = appsv1.DeploymentSpec{
-					Replicas: pointer.Int32Ptr(3),
-					Selector: &metav1.LabelSelector{
-						MatchLabels: edge.Labels,
-					},
-					Template: v1.PodTemplateSpec{
-						ObjectMeta: metav1.ObjectMeta{
-							Labels: edge.Labels,
-						},
-						Spec: v1.PodSpec{
-							//  System: requTechCont.System,
-							Containers: []v1.Container{
-								{
-									Name:  containers.Url,
-									Image: containers.Tag,
-									Args:  containers.Arguments,
-									Env:   getEnvVarValues(containers.Environment),
-									Ports: getListOfPorts(containers.Ports),
-								},
-							},
-						},
-					},
-				}
-				return nil
-			})
-
+			res, err := r.deployContainers(ctx, edge, containers, i, j, "requtechcont")
 			if err != nil {
 				return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
 			}
@@ -120,12 +112,67 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	return ctrl.Result{}, nil
 }
 
+func (r *KosmosKubeEdgeReconciler) deployContainers(
+	ctx context.Context, edge *crdv1.KosmosKubeEdge, container crdv1.ContainerDefinitions,
+	i int, j int, containerName string) (controllerutil.OperationResult, error) {
+
+	//Deployment enables declarative updates for Pods and ReplicaSets
+	deployment := &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      fmt.Sprintf("%s-%s-%d-%d", edge.Name, containerName, i+1, j+1),
+			Namespace: edge.Namespace,
+		},
+	}
+
+	// CreateOrUpdate creates or updates the given object obj in the Kubernetes cluster.
+	// The object's desired state should be reconciled with the existing state using the passed in ReconcileFn.
+	// obj must be a struct pointer so that obj can be updated with the content returned by the Server.
+	res, err := ctrl.CreateOrUpdate(ctx, r.Client, deployment, func() error {
+
+		// SetOwnerReference is a helper method to make sure the given object contains an object reference
+		// to the object provided. This allows you to declare that owner has a dependency on the object without
+		// specifying it as a controller. If a reference to the same object already exists,
+		// it'll be overwritten with the newly provided version.
+		if err := controllerutil.SetOwnerReference(edge, deployment, r.Scheme); err != nil {
+			return err
+		}
+
+		// Specification of the desired behavior of the Deployment.
+		deployment.Spec = appsv1.DeploymentSpec{
+			Replicas: pointer.Int32Ptr(3),
+			Selector: &metav1.LabelSelector{
+				MatchLabels: edge.Labels,
+			},
+			Template: v1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: edge.Labels,
+				},
+				Spec: v1.PodSpec{
+					Containers: []v1.Container{
+						{
+							Name:  "container",
+							Image: fmt.Sprintf("%s:%s", container.Url, container.Tag),
+							//Args:  containers.Arguments,
+							Env:   getEnvVarValues(container.Environment),
+							Ports: getListOfPorts(container.Ports),
+						},
+					},
+				},
+			},
+		}
+		return nil
+	})
+	return res, err
+}
+
 func getEnvVarValues(contractEnvironment []string) []v1.EnvVar {
 	res := []v1.EnvVar{}
-	for i, envValue := range contractEnvironment {
+	for _, envValues := range contractEnvironment {
+		values := strings.SplitN(envValues, "=", 2)
+		name, value := values[0], values[1]
 		res = append(res, v1.EnvVar{
-			Name:  "EnvVarValue-Name" + "-" + strconv.Itoa(i+1), //// Name noch mit Jan klären
-			Value: envValue,
+			Name:  name,
+			Value: value,
 		})
 	}
 	return res
@@ -136,19 +183,10 @@ func getListOfPorts(contractPorts []crdv1.PortsContainer) []v1.ContainerPort {
 	for i, port := range contractPorts {
 		res = append(res, v1.ContainerPort{
 			Name:          alignLabelsToString(port.Label, i+1),
-			ContainerPort: int32(getValidContainerPort(port.Src)),
-			//ContainerPort: int32(port.Src),
+			ContainerPort: int32(port.Src),
 		})
 	}
 	return res
-}
-
-func getValidContainerPort(portSource int) int {
-	if 0 < portSource && portSource < 65536 {
-		return portSource
-	} else {
-		return 1
-	}
 }
 
 func alignLabelsToString(portLabels []string, portNum int) string {
