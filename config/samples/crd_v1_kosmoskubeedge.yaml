@@ -3,7 +3,7 @@ kind: KosmosKubeEdge
 metadata:
   name: kosmoskubeedge
   labels:
-    irgendwas: irgendwas
+    system: edge
 spec:
   body:
     machine: "123"

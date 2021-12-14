@@ -73,8 +73,8 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	//build deployments for neccessary containers
 	for i, machineConnection := range edge.Spec.Body.MachineConnection {
-		var j int
-		res, err := r.deployContainers(ctx, edge, machineConnection.Connector, i, j, "machineconnection")
+		// var j int
+		res, err := r.deployContainers(ctx, edge, machineConnection.Connector, i, 0, "machineconnection")
 		if err != nil {
 			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
 		}
@@ -82,8 +82,8 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	for i, analysisSystems := range edge.Spec.Body.Analysis.Systems {
-		var j int
-		res, err := r.deployContainers(ctx, edge, analysisSystems.Connection.Container, i, j, "analysissystemconnection")
+		// var j int
+		res, err := r.deployContainers(ctx, edge, analysisSystems.Connection.Container, i, 0, "analysissystemconnection")
 		if err != nil {
 			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
 		}
@@ -91,8 +91,8 @@ func (r *KosmosKubeEdgeReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	for i, blockchainConnection := range edge.Spec.Body.BlockchainConnection.ContainerList {
-		var j int
-		res, err := r.deployContainers(ctx, edge, blockchainConnection, j, i, "blockchainconnection")
+		// var j int
+		res, err := r.deployContainers(ctx, edge, blockchainConnection, i, 0, "blockchainconnection")
 		if err != nil {
 			return ctrl.Result{}, fmt.Errorf("failed to create deployment: %w", err)
 		}
@@ -139,7 +139,7 @@ func (r *KosmosKubeEdgeReconciler) deployContainers(
 
 		// Specification of the desired behavior of the Deployment.
 		deployment.Spec = appsv1.DeploymentSpec{
-			Replicas: pointer.Int32Ptr(3),
+			Replicas: pointer.Int32Ptr(1),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: edge.Labels,
 			},
@@ -148,6 +148,7 @@ func (r *KosmosKubeEdgeReconciler) deployContainers(
 					Labels: edge.Labels,
 				},
 				Spec: v1.PodSpec{
+					NodeSelector: edge.Labels,
 					Containers: []v1.Container{
 						{
 							Name:  "container",
@@ -166,7 +167,7 @@ func (r *KosmosKubeEdgeReconciler) deployContainers(
 }
 
 func getEnvVarValues(contractEnvironment []string) []v1.EnvVar {
-	res := []v1.EnvVar{}
+	var res = []v1.EnvVar{}
 	for _, envValues := range contractEnvironment {
 		values := strings.SplitN(envValues, "=", 2)
 		name, value := values[0], values[1]
