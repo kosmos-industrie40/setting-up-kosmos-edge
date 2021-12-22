@@ -87,69 +87,71 @@ spec:
                             enable:
                               type: boolean
                             pipelines:
-                              properties:
-                                mltrigger:
-                                  properties:
-                                    definition:
-                                      description: 'TODO: update!!!!!'
-                                      type: string
-                                    type:
-                                      type: string
-                                  type: object
-                                pipeline:
-                                  items:
+                              items:
+                                properties:
+                                  mltrigger:
                                     properties:
-                                      container:
-                                        properties:
-                                          arguments:
-                                            items:
-                                              type: string
-                                            type: array
-                                          environment:
-                                            items:
-                                              type: string
-                                            type: array
-                                          ports:
-                                            items:
-                                              properties:
-                                                dst:
-                                                  type: integer
-                                                label:
-                                                  items:
-                                                    type: string
-                                                  type: array
-                                                src:
-                                                  type: integer
-                                              type: object
-                                            type: array
-                                          tag:
-                                            type: string
-                                          url:
-                                            type: string
-                                        type: object
-                                      from:
-                                        properties:
-                                          tag:
-                                            type: string
-                                          url:
-                                            type: string
-                                        type: object
-                                      persistOutput:
-                                        type: boolean
-                                      to:
-                                        properties:
-                                          tag:
-                                            type: string
-                                          url:
-                                            type: string
-                                        type: object
+                                      definition:
+                                        description: 'TODO: update!!!!!'
+                                        type: string
+                                      type:
+                                        type: string
                                     type: object
-                                  type: array
-                                sensors:
-                                  items:
-                                    type: string
-                                  type: array
-                              type: object
+                                  pipeline:
+                                    items:
+                                      properties:
+                                        container:
+                                          properties:
+                                            arguments:
+                                              items:
+                                                type: string
+                                              type: array
+                                            environment:
+                                              items:
+                                                type: string
+                                              type: array
+                                            ports:
+                                              items:
+                                                properties:
+                                                  dst:
+                                                    type: integer
+                                                  label:
+                                                    items:
+                                                      type: string
+                                                    type: array
+                                                  src:
+                                                    type: integer
+                                                type: object
+                                              type: array
+                                            tag:
+                                              type: string
+                                            url:
+                                              type: string
+                                          type: object
+                                        from:
+                                          properties:
+                                            tag:
+                                              type: string
+                                            url:
+                                              type: string
+                                          type: object
+                                        persistOutput:
+                                          type: boolean
+                                        to:
+                                          properties:
+                                            tag:
+                                              type: string
+                                            url:
+                                              type: string
+                                          type: object
+                                      type: object
+                                    type: array
+                                  sensors:
+                                    items:
+                                      type: string
+                                    type: array
+                                type: object
+                              type: array
                             system:
                               type: string
                           type: object
@@ -197,7 +199,7 @@ spec:
                       uri:
                         type: string
                     type: object
-                  checkSignature:
+                  checkSignatures:
                     type: boolean
                   contract:
                     description: "\t//+kubebuilder:validation:Optional"

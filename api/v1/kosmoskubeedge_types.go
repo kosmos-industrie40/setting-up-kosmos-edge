@@ -131,9 +131,9 @@ type ConnectionSystems struct {
 }
 
 type SystemsAnalysis struct {
-	System    string               `json:"system"`
-	Enable    bool                 `json:"enable"`
-	Pipelines PipelinesDefinitions `json:"pipelines"`
+	System    string                 `json:"system"`
+	Enable    bool                   `json:"enable"`
+	Pipelines []PipelinesDefinitions `json:"pipelines"`
 
 	//+kubebuilder:validation:Optional
 	Connection ConnectionSystems `json:"connection,omitempty"`
@@ -190,7 +190,7 @@ type BodyProperties struct {
 	Contract                    ContractBody                      `json:"contract,omitempty"`
 	RequiredTechnicalContainers []RequiredTechnicalContainersBody `json:"requiredTechnicalContainers,omitempty"`
 	KosmosLocalSystems          []string                          `json:"kosmosLocalSystems,omitempty"`
-	CheckSignature              bool                              `json:"checkSignature,omitempty"`
+	CheckSignature              bool                              `json:"checkSignatures,omitempty"`
 	Analysis                    AnalysisBody                      `json:"analysis,omitempty"`
 	BlockchainConnection        BlockchainConnectionBody          `json:"blockchainConnection,omitempty"`
 	MachineConnection           []MachineConnectionBody           `json:"machineConnection,omitempty"`

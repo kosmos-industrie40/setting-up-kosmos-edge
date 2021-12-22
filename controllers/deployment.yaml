@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: setting-up-kosmos-edge-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: setting-up-kosmos-edge
+  template:
+    metadata:
+      labels:
+        app: setting-up-kosmos-edge
+    spec:
+      containers:
+      - name: setting-up-kosmos-edge
+        image: jlindnerinovex/setting-up-kosmos-edge:main.go
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
+        ports:
+        - containerPort: 1807
