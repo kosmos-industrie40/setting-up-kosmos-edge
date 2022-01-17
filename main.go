@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge/api/v1"
-	"gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge/controllers"
+	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge.git/api/v1"
+	"gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge.git/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

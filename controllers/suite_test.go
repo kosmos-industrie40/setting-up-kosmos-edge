@@ -22,7 +22,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge/api/v1"
+	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge.git/api/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"

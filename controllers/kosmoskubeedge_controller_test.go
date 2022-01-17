@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge/api/v1"
+	crdv1 "gitlab.inovex.de/proj-kosmos/infra/setting-up-kosmos-edge.git/api/v1"
 )
 
 var _ = Describe("snippet controller", func() {
