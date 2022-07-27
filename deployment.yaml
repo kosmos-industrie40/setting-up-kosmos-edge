@@ -1,0 +1,617 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: kosmos-kube-edge-system
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.4.1
+  creationTimestamp: null
+  name: kosmoskubeedges.crd.github.inovex.de
+spec:
+  group: crd.github.inovex.de
+  names:
+    kind: KosmosKubeEdge
+    listKind: KosmosKubeEdgeList
+    plural: kosmoskubeedges
+    singular: kosmoskubeedge
+  scope: Namespaced
+  versions:
+    - name: v1
+      schema:
+        openAPIV3Schema:
+          description: KosmosKubeEdge is the Schema for the kosmoskubeedges API
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: string
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: KosmosKubeEdgeSpec defines the desired state of KosmosKubeEdge
+              properties:
+                body:
+                  description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster Important: Run "make" to regenerate code after modifying this file'
+                  properties:
+                    analysis:
+                      properties:
+                        enable:
+                          type: boolean
+                        systems:
+                          items:
+                            properties:
+                              connection:
+                                properties:
+                                  container:
+                                    properties:
+                                      arguments:
+                                        items:
+                                          type: string
+                                        type: array
+                                      environment:
+                                        items:
+                                          type: string
+                                        type: array
+                                      ports:
+                                        items:
+                                          properties:
+                                            dst:
+                                              type: integer
+                                            label:
+                                              items:
+                                                type: string
+                                              type: array
+                                            src:
+                                              type: integer
+                                          type: object
+                                        type: array
+                                      tag:
+                                        type: string
+                                      url:
+                                        type: string
+                                    type: object
+                                  interval:
+                                    type: string
+                                  url:
+                                    type: string
+                                  user-mgmt:
+                                    type: string
+                                type: object
+                              enable:
+                                type: boolean
+                              pipelines:
+                                items:
+                                  properties:
+                                    mltrigger:
+                                      properties:
+                                        definition:
+                                          description: "TODO: update!!!!!"
+                                          type: string
+                                        type:
+                                          type: string
+                                      type: object
+                                    pipeline:
+                                      items:
+                                        properties:
+                                          container:
+                                            properties:
+                                              arguments:
+                                                items:
+                                                  type: string
+                                                type: array
+                                              environment:
+                                                items:
+                                                  type: string
+                                                type: array
+                                              ports:
+                                                items:
+                                                  properties:
+                                                    dst:
+                                                      type: integer
+                                                    label:
+                                                      items:
+                                                        type: string
+                                                      type: array
+                                                    src:
+                                                      type: integer
+                                                  type: object
+                                                type: array
+                                              tag:
+                                                type: string
+                                              url:
+                                                type: string
+                                            type: object
+                                          from:
+                                            properties:
+                                              tag:
+                                                type: string
+                                              url:
+                                                type: string
+                                            type: object
+                                          persistOutput:
+                                            type: boolean
+                                          to:
+                                            properties:
+                                              tag:
+                                                type: string
+                                              url:
+                                                type: string
+                                            type: object
+                                        type: object
+                                      type: array
+                                    sensors:
+                                      items:
+                                        type: string
+                                      type: array
+                                  type: object
+                                type: array
+                              system:
+                                type: string
+                            type: object
+                          type: array
+                      type: object
+                    blockchainConnection:
+                      properties:
+                        containerList:
+                          items:
+                            properties:
+                              arguments:
+                                items:
+                                  type: string
+                                type: array
+                              environment:
+                                items:
+                                  type: string
+                                type: array
+                              ports:
+                                items:
+                                  properties:
+                                    dst:
+                                      type: integer
+                                    label:
+                                      items:
+                                        type: string
+                                      type: array
+                                    src:
+                                      type: integer
+                                  type: object
+                                type: array
+                              tag:
+                                type: string
+                              url:
+                                type: string
+                            type: object
+                          maxItems: 2
+                          minItems: 2
+                          type: array
+                        sensors:
+                          items:
+                            type: object
+                          minItems: 0
+                          type: array
+                        uri:
+                          type: string
+                      type: object
+                    checkSignatures:
+                      type: boolean
+                    contract:
+                      description: "\t//+kubebuilder:validation:Optional"
+                      properties:
+                        creationTime:
+                          type: string
+                        id:
+                          type: string
+                        parentContract:
+                          type: string
+                        partners:
+                          items:
+                            type: string
+                          type: array
+                        permissions:
+                          properties:
+                            readPermission:
+                              items:
+                                type: string
+                              type: array
+                            writePermission:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        valid:
+                          properties:
+                            end:
+                              type: string
+                            start:
+                              type: string
+                          type: object
+                        version:
+                          type: string
+                      type: object
+                    kosmosLocalSystems:
+                      items:
+                        type: string
+                      type: array
+                    machine:
+                      type: string
+                    machineConnection:
+                      items:
+                        properties:
+                          connectionData:
+                            properties:
+                              credentials:
+                                type: object
+                              machineID:
+                                type: string
+                              uri:
+                                type: string
+                            type: object
+                          connector:
+                            properties:
+                              arguments:
+                                items:
+                                  type: string
+                                type: array
+                              environment:
+                                items:
+                                  type: string
+                                type: array
+                              ports:
+                                items:
+                                  properties:
+                                    dst:
+                                      type: integer
+                                    label:
+                                      items:
+                                        type: string
+                                      type: array
+                                    src:
+                                      type: integer
+                                  type: object
+                                type: array
+                              tag:
+                                type: string
+                              url:
+                                type: string
+                            type: object
+                          subscribeData:
+                            type: object
+                        type: object
+                      type: array
+                    metadata:
+                      type: object
+                    requiredTechnicalContainers:
+                      items:
+                        properties:
+                          containers:
+                            items:
+                              properties:
+                                arguments:
+                                  items:
+                                    type: string
+                                  type: array
+                                environment:
+                                  items:
+                                    type: string
+                                  type: array
+                                ports:
+                                  items:
+                                    properties:
+                                      dst:
+                                        type: integer
+                                      label:
+                                        items:
+                                          type: string
+                                        type: array
+                                      src:
+                                        type: integer
+                                    type: object
+                                  type: array
+                                tag:
+                                  type: string
+                                url:
+                                  type: string
+                              type: object
+                            type: array
+                          system:
+                            type: string
+                        type: object
+                      type: array
+                    sensors:
+                      items:
+                        properties:
+                          meta:
+                            type: object
+                          name:
+                            type: string
+                          storageDuration:
+                            items:
+                              properties:
+                                duration:
+                                  type: string
+                                systemName:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
+                      type: array
+                  type: object
+                signature:
+                  properties:
+                    meta:
+                      properties:
+                        algorithm:
+                          type: string
+                        date:
+                          type: string
+                      type: object
+                    signature:
+                      type: string
+                  type: object
+              type: object
+            status:
+              properties:
+                createdDeployments:
+                  type: integer
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kosmos-kube-edge-controller-manager
+  namespace: kosmos-kube-edge-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kosmos-kube-edge-leader-election-role
+  namespace: kosmos-kube-edge-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: kosmos-kube-edge-manager-role
+rules:
+  - apiGroups:
+      - crd.github.inovex.de
+    resources:
+      - kosmoskubeedges
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - crd.github.inovex.de
+    resources:
+      - kosmoskubeedges/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - crd.github.inovex.de
+    resources:
+      - kosmoskubeedges/status
+    verbs:
+      - get
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kosmos-kube-edge-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kosmos-kube-edge-proxy-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kosmos-kube-edge-leader-election-rolebinding
+  namespace: kosmos-kube-edge-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kosmos-kube-edge-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: kosmos-kube-edge-controller-manager
+    namespace: kosmos-kube-edge-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kosmos-kube-edge-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kosmos-kube-edge-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: kosmos-kube-edge-controller-manager
+    namespace: kosmos-kube-edge-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kosmos-kube-edge-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kosmos-kube-edge-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: kosmos-kube-edge-controller-manager
+    namespace: kosmos-kube-edge-system
+---
+apiVersion: v1
+data:
+  controller_manager_config.yaml: |
+    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
+    kind: ControllerManagerConfig
+    health:
+      healthProbeBindAddress: :8081
+    metrics:
+      bindAddress: 127.0.0.1:8080
+    webhook:
+      port: 9443
+    leaderElection:
+      leaderElect: true
+      resourceName: 17d49d3d.github.inovex.de
+kind: ConfigMap
+metadata:
+  name: kosmos-kube-edge-manager-config
+  namespace: kosmos-kube-edge-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: kosmos-kube-edge-controller-manager-metrics-service
+  namespace: kosmos-kube-edge-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      targetPort: https
+  selector:
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    control-plane: controller-manager
+  name: kosmos-kube-edge-controller-manager
+  namespace: kosmos-kube-edge-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      control-plane: controller-manager
+  template:
+    metadata:
+      labels:
+        control-plane: controller-manager
+    spec:
+      containers:
+        - args:
+            - --secure-listen-address=0.0.0.0:8443
+            - --upstream=http://127.0.0.1:8080/
+            - --logtostderr=true
+            - --v=10
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+          name: kube-rbac-proxy
+          ports:
+            - containerPort: 8443
+              name: https
+        - args:
+            - --health-probe-bind-address=:8081
+            - --metrics-bind-address=127.0.0.1:8080
+            - --leader-elect
+          command:
+            - /manager
+          image: harbor.io/analyse-platform-kosmos/kubernetes-engine:latest
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 30Mi
+            requests:
+              cpu: 100m
+              memory: 20Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+      imagePullSecrets:
+        - name: docker-regcred
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: kosmos-kube-edge-controller-manager
+      terminationGracePeriodSeconds: 10

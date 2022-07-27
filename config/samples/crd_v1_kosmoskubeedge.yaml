@@ -1,0 +1,129 @@
+apiVersion: crd.github.inovex.de/v1
+kind: KosmosKubeEdge
+metadata:
+  name: kosmoskubeedge
+  labels:
+    system: edge
+spec:
+  body:
+    machine: "123"
+    sensors:
+      - name: "SchuetteAlarmMessages"
+      - storageDuration:
+          - systemName: "cloud"
+          - duration: "24h"
+      - meta:
+    requiredTechnicalContainers:
+      - system: "edge"
+        containers:
+          - url: "harbor.io/ondics/mqtt-broker"
+            tag: "rc3"
+            environment:
+              - "TZ=Europe/Berlin"
+              - "ALLOW_TLS=false"
+          - url: "harbor.io/analyse-platform-kosmos/kosmos-local-cloud-connector-db"
+            tag: "0.0.1"
+            environment:
+              - "POSTGRES_USER=kosmos_local"
+              - "POSTGRES_PASSWORD=db_pass"
+          - url: "harbor.io/analyse-platform-kosmos/mediator"
+            tag: "edge-0.0.1"
+          - url: "harbor.io/analyse-platform-kosmos/schuette-alarms-knowledge-database"
+            tag: "0.0.5"
+            environment:
+              - "CONFIG_POSTGRES_DATABASE_HOST=postgres.kosmos-local"
+              - "CONFIG_POSTGRES_DATABASE_USER=kosmos_local"
+              - "CONFIG_POSTGRES_DATABASE_PASSWORD=db_pass"
+              - "CONFIG_POSTGRES_DATABASE_DBNAME=kosmos"
+          - url: "harbor.io/analyse-platform-kosmos/schuette-alarms-knowledge-database-frontend"
+            tag: "latest"
+            environment:
+              - "BACKEND_PATH=http://alarm-knowledge-database-backend"
+          - url: "harbor.io/cache/library/traefik:"
+            tag: "2.5"
+            environment:
+              - "TRAEFIK_API_INSECURE=true"
+              - "TRAEFIK_PROVIDERS_DOCKER=true"
+              - "TRAEFIK_PROVIDERS_DOCKER_DEFAULTRULE=Host(`{{ trimPrefix `/` .Name}.87.106.115.124.nip.io`)"
+    analysis:
+      enable: true
+      systems:
+        - enable: true
+          system: "edge"
+          connection:
+            url: ""
+            user-mgmt: ""
+            interval: "10s"
+            container:
+              url: "harbor.io/analyse-platform-kosmos/kosmos-analyse-connector"
+              tag: "0.0.4"
+              environment:
+                - "CC_EDGE.MQTT.URL=mqtt-broker.kosmos-local"
+                - "CC_EDGE.MQT.PORT=1883"
+                - "CC_EDGE.USE.VAULT=False"
+                - "CC_EDGE.DATABASE.URL=postgres.kosmos-local"
+                - "CC_EDGE.DATABASE.PORT=5432"
+                - "CC_EDGE.DATABASE.USER=kosmos_local"
+                - "CC_EDGE.DATABASE.PASSWORD=db_pass"
+                - "CC_EDGE.DATABASE.DATABASE=kosmos"
+                - "CC_ANALYSISCLOUD.CONNECTOR.URL=https://v2.connector.kosmos.io"
+                - "CC_ANALYSISCLOUD.CONNECTOR.PORT=443"
+                - "CC_ANALYSISCLOUD.USERMGMT.PORT=443"
+                - "CC_ANALYSISCLOUD.USERMGMT.SCHEMA=https"
+                - "CC_ANALYSISCLOUD.USERMGMT.USER=test_cloud_connector_edge_user"
+                - "CC_ANALYSISCLOUD.USERMGMT.PASSWORD=test_cloud_connector_edge"
+          pipelines:
+            - mltrigger:
+                type: "event"
+                definition: null
+              pipeline:
+                - persistOutput: false
+                  from: null
+                  to: null
+                  container:
+                    url: "harbor.io/analyse-platform-kosmos/persist-incoming-data"
+                    tag: "0.1.1"
+                    environment:
+                      - "CONFIG_MODEL_URL=harbor.io/analyse-platform-kosmos/persist-incoming-data"
+                      - "CONFIG_MODEL_TAG=0.1.1"
+                      - "CONFIG_MODEL_FROM=persist-incoming-data-edge"
+                      - "CONFIG_DB_USERNAME=kosmos_local"
+                      - "CONFIG_DB_PASSWORD=db_pass"
+                      - "CONFIG_DB_HOST=postgres.kosmos-local"
+                      - "CONFIG_DB_PORT=5432"
+                      - "CONFIG_DB_DATABASE=kosmos"
+                      - "CONFIG_LOGGING_LOG_LEVEL=DEBUG"
+                      - "CONFIG_MQTT_HOST=mqtt-broker.kosmos-local"
+              sensors:
+                - "SchuetteAlarmMessages"
+    machineConnection:
+      - connector:
+          url: "harbor.io/analyse-platform-kosmos/sw-alarms-simulator"
+          tag: "0.0.2"
+          environment:
+            - "ALARM_SIMULATOR_MQTT__MESSAGE_TYPE=schuette-alarms"
+            - "ALARM_SIMULATOR_MQTT__AS_ML_TRIGGER=false"
+        connectionData:
+          uri: ""
+          credentials:
+          machineID: "2030235"
+        subscribeData:
+    blockchainConnection:
+      uri: "blockchain"
+      containerList:
+        - url: "harbor.io/ondics/blockchain-connector"
+          tag: "0.5.0"
+          environment:
+            - "TZ=Europe/Berlin"
+            - "USE_TLS=false"
+            - "USE_STANDALONE_NO_MQTT=false"
+            - "BC_API_PRODDATA=http://kosmos_bc_local:3001/storage/prodData"
+            - "BC_API_MACHINES=http://0.0.0.0:3000/machine"
+            - "BC_API_CONTRACTS=http://0.0.0.0:3000/contract"
+            - 'BCC_CONFIG=[{"machineId": "1","sensorId": "sensor_messages","mqtt-topic": "kosmos/machine-data/<machineId>/sensor/<sensorId>/update","blockchain-endpoint": "<BC_API_PRODDATA>","mapping": "none"}]'
+            - "MQTT_BROKER_FQDN=mqtt-broker.kosmos-local"
+        - url: "harbor.io/datarella/local_app"
+          tag: "latest"
+          environment:
+            - "CONNECTION_PROFILES_ENDPOINT=https://api.npoint.io/"
+      sensors:
