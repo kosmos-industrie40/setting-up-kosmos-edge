@@ -1,4 +1,4 @@
-module github.com/kosmos-industrie40/setting-up-kosmos-edge.git
+module github.com/kosmos-industrie40/setting-up-kosmos-edge
 
 go 1.16
 

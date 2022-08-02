@@ -31,8 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge.git/api/v1"
-	"github.com/kosmos-industrie40/setting-up-kosmos-edge.git/controllers"
+	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge/api/v1"
+	"github.com/kosmos-industrie40/setting-up-kosmos-edge/controllers"
 	//+kubebuilder:scaffold:imports
 )
 

@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge.git/api/v1"
+	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge/api/v1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"

@@ -33,7 +33,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge.git/api/v1"
+	crdv1 "github.com/kosmos-industrie40/setting-up-kosmos-edge/api/v1"
 )
 
 // KosmosKubeEdgeReconciler reconciles a KosmosKubeEdge object
